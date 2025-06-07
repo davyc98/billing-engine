@@ -12,17 +12,12 @@ type (
 	}
 
 	GetOutstandingInput struct {
-		LoanID     uint64 `json:"loan_id"     validate:"required"`
-		CustomerID uint64 `json:"customer_id"`
+		LoanID uint64 `json:"loan_id"     validate:"required"`
 	}
 
 	GetOustandingOutput struct {
-		ID              uint64
-		LoanID          uint64
-		WeekNumber      int
-		DueDate         string
-		ScheduledAmount decimal.Decimal
-		PaidAmount      decimal.Decimal
-		PaymentStatus   string
+		LoanID                 uint64          `json:"loan_id"`
+		TotalOutstandingAmount decimal.Decimal `json:"total_outstanding_amount"`
+		TotalOustandingWeeks   int             `json:"total_outstanding_week"`
 	}
 )

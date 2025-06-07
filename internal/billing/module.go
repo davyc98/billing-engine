@@ -29,8 +29,14 @@ func New(deps Dependencies) *Exposed {
 		deps.Logger,
 	)
 
+	paymentUsecase := interactor.NewMakePayment(
+		loanSQLstore,
+		deps.Logger,
+	)
+
 	loanHTTPEndpoint := gateway.NewLoanHTTPEndpoint(
 		getOutstandingUsecase,
+		paymentUsecase,
 		deps.Logger,
 		deps.Validator,
 	)

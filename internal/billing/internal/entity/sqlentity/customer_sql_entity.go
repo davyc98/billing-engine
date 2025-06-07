@@ -39,12 +39,12 @@ func (u User) StringColumns() []string {
 
 func (u *User) Values() []any {
 	return []any{
-		u.ID,
-		u.Name,
-		u.Email,
-		u.Phone,
-		u.CreatedAt,
-		u.UpdatedAt,
+		&u.ID,
+		&u.Name,
+		&u.Email,
+		&u.Phone,
+		&u.CreatedAt,
+		&u.UpdatedAt,
 	}
 }
 

@@ -136,3 +136,53 @@ func (ls *LoanStatus) Scan(value any) error {
 
 	return errors.New("failed to scan loan status")
 }
+
+type UpdateLoan struct {
+	CurrentOutstandingBalance decimal.Decimal
+	UpdatedAt                 time.Time
+}
+
+func (l UpdateLoan) Columns() []any {
+	return []any{
+		"current_outstanding_balance",
+		"updated_at",
+	}
+}
+
+func (l UpdateLoan) StringColumns() []string {
+	vals := make([]string, len(l.Columns()))
+	for i, col := range l.Columns() {
+		c, ok := col.(string)
+		if ok {
+			vals[i] = c
+		}
+	}
+
+	return vals
+}
+
+func (l *UpdateLoan) Values() []any {
+	return []any{
+		&l.CurrentOutstandingBalance,
+		&l.UpdatedAt,
+	}
+}
+
+func (l *UpdateLoan) DriverValues() []driver.Value {
+	vals := make([]driver.Value, len(l.Values()))
+	for i, v := range l.Values() {
+		vals[i] = v
+	}
+
+	return vals
+}
+
+func (a *UpdateLoan) MappedValues() map[string]driver.Value {
+	vals := make(map[string]driver.Value)
+	cols := a.StringColumns()
+	for i, col := range cols {
+		vals[col] = a.DriverValues()[i]
+	}
+
+	return vals
+}

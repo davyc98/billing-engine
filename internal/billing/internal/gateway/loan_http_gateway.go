@@ -29,23 +29,31 @@ func NewLoanHTTPGateway(
 		"/billing/:loan_id",
 		server.Serve(loanHTTPEndpoint.GetOutstanding),
 	)
+
+	httpRouter.Handler(
+		http.MethodPost,
+		"/billing",
+		server.Serve(loanHTTPEndpoint.MakePayment),
+	)
 }
 
 type LoanHTTPEndpoint struct {
 	getOutstandingUsecase usecase.GetOutstanding
-
-	validator *validator.Validate
-	logger    *zap.SugaredLogger
+	paymentUsecase        usecase.MakePayment
+	validator             *validator.Validate
+	logger                *zap.SugaredLogger
 }
 
 func NewLoanHTTPEndpoint(
 	getOutstandingUsecase usecase.GetOutstanding,
+	paymentUsecase usecase.MakePayment,
 	logger *zap.SugaredLogger,
 	validator *validator.Validate,
 
 ) *LoanHTTPEndpoint {
 	return &LoanHTTPEndpoint{
 		getOutstandingUsecase: getOutstandingUsecase,
+		paymentUsecase:        paymentUsecase,
 		logger:                logger,
 		validator:             validator,
 	}
@@ -81,4 +89,30 @@ func (l *LoanHTTPEndpoint) GetOutstanding(
 	}
 
 	return res, nil
+}
+
+func (l *LoanHTTPEndpoint) MakePayment(
+	ctx context.Context,
+	request pkghttp.Request,
+) (resp any, err error) {
+	var input usecase.PaymentInput
+	if err := request.Decode(&input); err != nil {
+		l.logger.Errorw("failed to decode request", "error", err)
+
+		return nil, pkgerror.ServerErrorFrom(err)
+	}
+
+	if err := l.validator.Struct(input); err != nil {
+		l.logger.Errorw("failed to validate request", "error", err)
+
+		return nil, pkgerror.ValidationErrorFrom(err)
+	}
+
+	if err = l.paymentUsecase.Execute(ctx, input); err != nil {
+		l.logger.Errorw("failed to get oustanding", "error", err)
+
+		return nil, err
+	}
+
+	return "ok", nil
 }
