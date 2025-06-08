@@ -35,11 +35,18 @@ func NewLoanHTTPGateway(
 		"/billing",
 		server.Serve(loanHTTPEndpoint.MakePayment),
 	)
+
+	httpRouter.Handler(
+		http.MethodGet,
+		"/billing/:loan_id/is-delinquent",
+		server.Serve(loanHTTPEndpoint.IsDelinquent),
+	)
 }
 
 type LoanHTTPEndpoint struct {
 	getOutstandingUsecase usecase.GetOutstanding
 	paymentUsecase        usecase.MakePayment
+	isDelinquentUsecase   usecase.IsDelinquent
 	validator             *validator.Validate
 	logger                *zap.SugaredLogger
 }
@@ -47,6 +54,7 @@ type LoanHTTPEndpoint struct {
 func NewLoanHTTPEndpoint(
 	getOutstandingUsecase usecase.GetOutstanding,
 	paymentUsecase usecase.MakePayment,
+	isDelinquentUsecase usecase.IsDelinquent,
 	logger *zap.SugaredLogger,
 	validator *validator.Validate,
 
@@ -54,6 +62,7 @@ func NewLoanHTTPEndpoint(
 	return &LoanHTTPEndpoint{
 		getOutstandingUsecase: getOutstandingUsecase,
 		paymentUsecase:        paymentUsecase,
+		isDelinquentUsecase:   isDelinquentUsecase,
 		logger:                logger,
 		validator:             validator,
 	}
@@ -83,6 +92,38 @@ func (l *LoanHTTPEndpoint) GetOutstanding(
 
 	var res *usecase.GetOustandingOutput
 	if res, err = l.getOutstandingUsecase.Execute(ctx, input); err != nil {
+		l.logger.Errorw("failed to get oustanding", "error", err)
+
+		return nil, err
+	}
+
+	return res, nil
+}
+
+func (l *LoanHTTPEndpoint) IsDelinquent(
+	ctx context.Context,
+	request pkghttp.Request,
+) (resp any, err error) {
+	var input usecase.IsDelinquentInput
+	params := httprouter.ParamsFromContext(ctx)
+
+	loanID := params.ByName("loan_id")
+
+	input.LoanID, err = strconv.ParseUint(loanID, 10, 64)
+	if err != nil {
+		l.logger.Errorw("failed to parse loan id", "error", err)
+
+		return nil, pkgerror.ValidationErrorFrom(err)
+	}
+
+	if err := l.validator.Struct(input); err != nil {
+		l.logger.Errorw("failed to validate request", "error", err)
+
+		return nil, pkgerror.ValidationErrorFrom(err)
+	}
+
+	var res *usecase.IsDelinquentOutput
+	if res, err = l.isDelinquentUsecase.Execute(ctx, input); err != nil {
 		l.logger.Errorw("failed to get oustanding", "error", err)
 
 		return nil, err

@@ -18,6 +18,7 @@ type (
 	GetOustandingOutput struct {
 		LoanID                 uint64          `json:"loan_id"`
 		TotalOutstandingAmount decimal.Decimal `json:"total_outstanding_amount"`
+		PayableAmount          decimal.Decimal `json:"payable_amount"`
 		TotalOustandingWeeks   int             `json:"total_outstanding_week"`
 	}
 )

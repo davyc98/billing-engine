@@ -1,6 +1,7 @@
 package sqlentity
 
 import (
+	"database/sql"
 	"database/sql/driver"
 	"errors"
 	"time"
@@ -21,7 +22,7 @@ type Loan struct {
 	WeeklyPaymentAmount       decimal.Decimal
 	CurrentOutstandingBalance decimal.Decimal
 	CreatedAt                 time.Time
-	UpdatedAt                 time.Time
+	UpdatedAt                 sql.NullTime
 }
 
 func (l Loan) Columns() []any {
@@ -31,11 +32,12 @@ func (l Loan) Columns() []any {
 		"loan_amount",
 		"interest_rate",
 		"status",
+		"loan_term_weeks",
 		"start_date",
 		"end_date",
 		"total_payable_amount",
 		"weekly_payment_amount",
-		"current_oustanding_balance",
+		"current_outstanding_balance",
 		"created_at",
 		"updated_at",
 	}

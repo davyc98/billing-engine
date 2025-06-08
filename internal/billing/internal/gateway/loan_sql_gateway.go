@@ -80,7 +80,7 @@ func (r *LoanSQLGateway) GetLoanSchedule(ctx context.Context, loanID uint64) (sq
 func (r *LoanSQLGateway) GetLoan(ctx context.Context, loanID uint64) (sqlentity.Loans, error) {
 	var res sqlentity.Loan
 	query := r.queryBuilder.Select(res.Columns()...).From(r.loanTableName).Where(goqu.Ex{
-		"loan_id": loanID,
+		"id": loanID,
 	})
 
 	sql, _, err := query.ToSQL()

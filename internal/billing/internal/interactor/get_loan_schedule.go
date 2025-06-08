@@ -8,6 +8,7 @@ import (
 	"github.com/davyc98/billing-engine/internal/billing/internal/entity/sqlentity"
 	"github.com/davyc98/billing-engine/internal/billing/internal/gateway"
 	"github.com/davyc98/billing-engine/internal/billing/internal/usecase"
+	"github.com/davyc98/billing-engine/internal/pkg/pkgerror"
 	"github.com/shopspring/decimal"
 	"go.uber.org/zap"
 )
@@ -60,9 +61,17 @@ func (c *GetOutstandingLoan) Execute(
 		totalOutstandingWeek++
 	}
 
+	var loans sqlentity.Loans
+	if loans, err = c.store.GetLoan(ctx, in.LoanID); err != nil {
+		c.logger.Errorw("failed to get loan", "error", err)
+
+		return nil, pkgerror.ServerErrorFrom(err)
+	}
+
 	return &usecase.GetOustandingOutput{
 		LoanID:                 in.LoanID,
-		TotalOutstandingAmount: total,
+		TotalOutstandingAmount: loans.First().CurrentOutstandingBalance,
+		PayableAmount:          total,
 		TotalOustandingWeeks:   totalOutstandingWeek,
 	}, nil
 }
