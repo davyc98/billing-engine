@@ -1,0 +1,53 @@
+{
+	"info": {
+		"_postman_id": "ae7d6cf1-e380-4f32-9d1e-d926b4d783a6",
+		"name": "Billing-Engine",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "7955320"
+	},
+	"item": [
+		{
+			"name": "GetOutstanding",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "IsDelinquent",
+			"request": {
+				"method": "GET",
+				"header": []
+			},
+			"response": []
+		},
+		{
+			"name": "makePayment",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"loan_id\":101\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "localhost:8080/billing",
+					"host": [
+						"localhost"
+					],
+					"port": "8080",
+					"path": [
+						"billing"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
