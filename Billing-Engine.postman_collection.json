@@ -1,16 +1,18 @@
 {
 	"info": {
-		"_postman_id": "ae7d6cf1-e380-4f32-9d1e-d926b4d783a6",
+		"_postman_id": "e9f488f0-aa68-4802-997f-c639713b4154",
 		"name": "Billing-Engine",
-		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
-		"_exporter_id": "7955320"
+		"schema": "https://schema.getpostman.com/json/collection/v2.0.0/collection.json",
+		"_exporter_id": "24285479",
+		"_collection_link": "https://galactic-trinity-756633.postman.co/workspace/My-Workspace~aaa631ce-d75f-461e-8428-8bdbc0902dff/collection/24285479-e9f488f0-aa68-4802-997f-c639713b4154?action=share&source=collection_link&creator=24285479"
 	},
 	"item": [
 		{
 			"name": "GetOutstanding",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": "localhost:8081/billing/101"
 			},
 			"response": []
 		},
@@ -18,7 +20,8 @@
 			"name": "IsDelinquent",
 			"request": {
 				"method": "GET",
-				"header": []
+				"header": [],
+				"url": "localhost:8081/billing/101/is-delinquent"
 			},
 			"response": []
 		},
@@ -36,16 +39,7 @@
 						}
 					}
 				},
-				"url": {
-					"raw": "localhost:8080/billing",
-					"host": [
-						"localhost"
-					],
-					"port": "8080",
-					"path": [
-						"billing"
-					]
-				}
+				"url": "localhost:8080/billing"
 			},
 			"response": []
 		}

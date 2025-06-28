@@ -12,7 +12,7 @@ CREATE TABLE loan_schedule (
     -- Foreign Key constraint
     CONSTRAINT fk_loan_id
         FOREIGN KEY (loan_id)
-        REFERENCES loan (loan_id)
+        REFERENCES loan (id)
         ON DELETE CASCADE -- If a loan is deleted, its schedule entries are also deleted.
 );
 
